@@ -3910,14 +3910,11 @@
     {
       "name": ".phrase.yml",
       "description": "Phrase configuration file",
-      "fileMatch": [".phrase.yml"],
+      "fileMatch": [
+        ".phrase.yml",
+        ".phraseapp.yml"
+      ],
       "url": "https://json.schemastore.org/phrase.json"
-    },
-    {
-      "name": ".phraseapp.yml",
-      "description": "PhraseApp configuration file",
-      "fileMatch": [".phraseapp.yml"],
-      "url": "https://json.schemastore.org/phraseapp.json"
     },
     {
       "name": "prettierrc.json",

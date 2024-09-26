@@ -3,22 +3,39 @@
   "$id": "https://json.schemastore.org/phrase.json",
   "definitions": {
     "project_id": {
-      "description": "ID of the project",
+      "title": "Project ID",
+      "description": "ID of the project, can be found in the project settings",
       "type": "string"
     },
     "file_format": {
+      "title": "File format",
       "description": "File format name. See the format guide in the documentation for all supported file formats",
-      "type": "string",
-      "default": "yml"
+      "type": "string"
     },
     "locale_id": {
+      "title": "Locale ID",
       "description": "Locale that should be downloaded. Locale ID or locale name are valid options",
       "type": "string"
     },
     "encoding": {
+      "title": "Encoding",
       "description": "Enforces a specific encoding on the file contents. Valid options are \"UTF-8\", \"UTF-16\" and \"ISO-8859-1\"",
       "type": "string",
       "default": "UTF-8"
+    },
+    "format_options": {
+      "title": "Format-specific options",
+      "description": "Additional options available for specific formats. See corresponding format guide for the list",
+      "type": "object"
+    },
+    "branch": {
+      "title": "Branch name",
+      "type": "string"
+    },
+    "translation_key_prefix": {
+      "title": "Translation key prefix",
+      "description": "Prefix that will be added to all translation keys upon push/pull. Use \"<file_name>\" to use the name of the file",
+      "type": "string"
     }
   },
   "properties": {
@@ -49,19 +66,22 @@
               "type": "array",
               "items": {
                 "type": "object",
+                "required": [
+                  "file"
+                ],
                 "properties": {
                   "file": {
-                    "description": "Translation file which will be uploaded",
-                    "type": "string",
-                    "default": "<locale_name>.yml"
+                    "title": "File to be uploaded",
+                    "description": "Path to the translation file(s). It can contain the placeholders: <locale_name>, <locale_code>, <tag>.",
+                    "type": "string"
                   },
                   "params": {
-                    "description": "Locale upload parameter",
+                    "title": "Locale upload parameters",
+                    "description": "For up-to-date list see the API documentation for the upload endpoint",
                     "type": "object",
                     "properties": {
                       "branch": {
-                        "description": "Branch name",
-                        "type": "string"
+                        "$ref": "#/definitions/branch"
                       },
                       "file_format": {
                         "$ref": "#/definitions/file_format"
@@ -69,7 +89,14 @@
                       "locale_id": {
                         "$ref": "#/definitions/locale_id"
                       },
+                      "format_options": {
+                        "$ref": "#/definitions/format_options"
+                      },
+                      "translation_key_prefix": {
+                        "$ref": "#/definitions/translation_key_prefix"
+                      },
                       "tags": {
+                        "title": "Tags",
                         "description": "List of tags separated by comma to be associated with the new keys contained in the upload",
                         "type": "string"
                       },
@@ -120,17 +147,6 @@
                       "locale_mapping": {
                         "description": "Optional, format specific mapping between locale names and the columns the translations to those locales are contained in",
                         "type": "object"
-                      },
-                      "format_options": {
-                        "description": "Additional options available for specific formats. See our format guide for complete list",
-                        "type": "object",
-                        "properties": {
-                          "column_separator": {
-                            "description": "Column separator character",
-                            "type": "string",
-                            "default": ";"
-                          }
-                        }
                       }
                     }
                   }
@@ -150,31 +166,40 @@
                 "type": "object",
                 "properties": {
                   "file": {
-                    "description": "Translation file which will be downloaded",
-                    "type": "string",
-                    "default": "<locale_name>.yml"
+                    "title": "File to be downloaded",
+                    "description": "Path to the translation file(s). It can contain placeholders: <locale_name>, <locale_code>, <tag>.",
+                    "type": "string"
                   },
                   "project_id": {
                     "$ref": "#/definitions/project_id"
                   },
                   "params": {
-                    "description": "Locale download parameter",
+                    "title": "Locale download parameters",
+                    "description": "For up-to-date list see the API documentation for the locale download endpoint",
                     "type": "object",
                     "properties": {
                       "branch": {
-                        "description": "Branch name",
-                        "type": "string"
+                        "$ref": "#/definitions/branch"
                       },
                       "file_format": {
                         "$ref": "#/definitions/file_format"
                       },
-                      "tags": {
-                        "description": "Limit results to keys tagged with a list of comma separated tag names",
-                        "type": "string",
-                        "default": ""
+                      "encoding": {
+                        "$ref": "#/definitions/encoding"
                       },
                       "locale_id": {
                         "$ref": "#/definitions/locale_id"
+                      },
+                      "format_options": {
+                        "$ref": "#/definitions/format_options"
+                      },
+                      "translation_key_prefix": {
+                        "$ref": "#/definitions/translation_key_prefix"
+                      },
+                      "tags": {
+                        "title": "Tags",
+                        "description": "Limit results to keys tagged with a list of comma separated tag names",
+                        "type": "string"
                       },
                       "include_empty_translations": {
                         "description": "Indicates whether keys without translations should be included in the output as well",
@@ -207,9 +232,6 @@
                         "deprecated": "Emojis are now supported natively",
                         "default": false
                       },
-                      "encoding": {
-                        "$ref": "#/definitions/encoding"
-                      },
                       "skip_unverified_translations": {
                         "description": "Indicates whether the locale file should skip all unverified translations",
                         "type": "boolean",
@@ -226,8 +248,14 @@
                         "type": "string"
                       },
                       "custom_metadata_filters": {
-                        "description": "Custom metadata filters. Provide the name of the metadata field and the value to filter by. Only keys with matching metadata will be included in the download",
+                        "title": "Custom metadata filters",
+                        "description": "Provide the name of the metadata field and the value to filter by. Only keys with matching metadata will be included in the download",
                         "type": "object"
+                      },
+                      "use_translation_key_prefix_as_filter": {
+                        "description": "If true, only keys with the specified translation key prefix will be included in the download",
+                        "type": "boolean",
+                        "default": false
                       }
                     }
                   }
